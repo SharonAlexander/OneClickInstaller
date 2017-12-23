@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/install"
+            android:icon="@drawable/ic_install"
+            android:title="@string/menu_drawer_install" />
+        <item
+            android:id="@+id/backup"
+            android:icon="@drawable/ic_backup"
+            android:title="@string/menu_drawer_backup" />
+    </group>
+
+    <item android:title="@string/menu_drawer_more">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/menu_drawer_settings" />
+        </menu>
+    </item>
+</menu>

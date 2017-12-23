@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:icon="@drawable/directory_black"
+        android:key="filepick"
+        android:title="@string/edittextpreference_title" />
+    <Preference
+        android:icon="@drawable/rate_black"
+        android:key="rateus"
+        android:summary="@string/prefrence_rateapp_title"
+        android:title="@string/preference_rateapp_dialogTitle" />
+    <Preference
+        android:icon="@drawable/about_black"
+        android:key="about"
+        android:title="@string/aboutus" />
+    <PreferenceCategory android:title="Support the Developer">
+        <PreferenceScreen
+            android:icon="@drawable/donate_black"
+            android:key="donate"
+            android:title="Remove the ADs" />
+    </PreferenceCategory>
+</PreferenceScreen>

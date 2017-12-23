@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "592093729700",
+    "firebase_url": "https://admob-app-id-5774446072.firebaseio.com",
+    "project_id": "admob-app-id-5774446072",
+    "storage_bucket": "admob-app-id-5774446072.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592093729700:android:6c6dab5ae74833be",
+        "android_client_info": {
+          "package_name": "com.sharon.oneclickinstaller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592093729700-ml8uemdsigtv5nf8g9r4qvelbkdeiu9j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sharon.oneclickinstaller",
+            "certificate_hash": "6d160692ed018a68854db0259fbe6057a41ccca5"
+          }
+        },
+        {
+          "client_id": "592093729700-2qvus53ljj2d0t7p3ea7osmndqevkft1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAERDXgBqmBQJaqIJlYuLR9gfAgP7bAU5w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
