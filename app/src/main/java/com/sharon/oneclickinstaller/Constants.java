@@ -14,7 +14,7 @@ public class Constants {
         String version = "5.0";
         new AlertDialog.Builder(context)
                 .setTitle(R.string.app_name)
-                .setMessage("Version:" + version + "\nDeveloped by MadRabbits")
+                .setMessage("Version:" + version + "\nDeveloped by MadRabbits\u00a9")
                 .setPositiveButton(android.R.string.yes, null)
                 .setIcon(R.mipmap.ic_launcher)
                 .show();

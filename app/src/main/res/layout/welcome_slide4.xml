@@ -44,6 +44,7 @@
                 android:layout_marginLeft="80dp"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="10dp"
+                android:gravity="center"
                 android:text="@string/intro4_checkbox_internal" />
 
             <CheckBox
@@ -53,6 +54,7 @@
                 android:layout_marginLeft="80dp"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
                 android:text="@string/intro4_checkbox_default" />
 
             <Button

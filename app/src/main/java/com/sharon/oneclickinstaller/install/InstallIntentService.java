@@ -62,6 +62,7 @@ public class InstallIntentService extends IntentService {
             InstallerActivity.operationRunning = false;
             InstallScreen.appName = "";
             InstallScreen.elasticProgress = 0;
+            InstallScreen.totalSize = 0;
             InstallScreen.stopService = false;
             InstallScreen.serviceFinished = false;
             InstallScreen.serviceCancelled = false;

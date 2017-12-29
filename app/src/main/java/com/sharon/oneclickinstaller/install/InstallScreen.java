@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,7 +26,9 @@ import is.arontibo.library.ElasticDownloadView;
 
 public class InstallScreen extends AppCompatActivity {
 
-    public static int appProgress = 0, elasticProgress = 0, totalSize = InstallerActivity.selectedApps.size();
+    public static int appProgress = 0;
+    public static int elasticProgress = 0;
+    public static int totalSize;
     public static boolean serviceFinished = false, serviceCancelled = false, stopService = false;
     public static String appName = "";
     public static List<String> failedApps;
@@ -52,6 +53,12 @@ public class InstallScreen extends AppCompatActivity {
             mAdView.setVisibility(View.GONE);
         }
 
+        try {
+            totalSize = InstallerActivity.selectedApps.size();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            totalSize = 1;
+        }
         failedApps = new ArrayList<>();
         selectedApplications = new ArrayList<>(InstallerActivity.selectedApps);
         InstallerActivity.selectedApps.clear();
@@ -78,6 +85,7 @@ public class InstallScreen extends AppCompatActivity {
                 serviceCancelled = true;
                 stopButton.setVisibility(View.GONE);
                 InstallScreen.selectedApplications.clear();
+                InstallScreen.totalSize = 0;
                 InstallerActivity.operationRunning = false;
             }
         });
@@ -86,7 +94,6 @@ public class InstallScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("onResume: ",InstallerActivity.operationRunning+"" );
         setValues();
         IntentFilter filter = new IntentFilter(InstallScreen.ResponseReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -126,6 +133,8 @@ public class InstallScreen extends AppCompatActivity {
                 stopButton.setVisibility(View.VISIBLE);
                 elasticDownloadView.setProgress((float) elasticProgress);
             } else {
+                elasticDownloadView.success();
+                stopButton.setVisibility(View.GONE);
                 progressText.setText("Process Finished");
             }
         }

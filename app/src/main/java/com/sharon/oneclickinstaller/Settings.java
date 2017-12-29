@@ -31,7 +31,14 @@ public class Settings extends PreferenceFragment {
             = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result,
                                           Purchase purchase) {
-            if (result.isFailure()) {
+            if (result.getResponse() == 7) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Wow!!")
+                        .setMessage("You are awesome! You already purchased this item")
+                        .setPositiveButton(android.R.string.ok, null)
+                        .setIcon(R.mipmap.ic_launcher)
+                        .show();
+            } else if (result.isFailure()) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.purchase_error)
                         .setMessage(R.string.purchase_already_owned)

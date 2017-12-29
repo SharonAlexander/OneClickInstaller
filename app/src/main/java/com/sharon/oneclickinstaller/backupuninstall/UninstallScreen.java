@@ -26,7 +26,9 @@ import is.arontibo.library.ElasticDownloadView;
 
 public class UninstallScreen extends AppCompatActivity {
 
-    public static int appProgress = 0, elasticProgress = 0, totalSize = BackupActivity.selectedApps.size();
+    public static int appProgress = 0;
+    public static int elasticProgress = 0;
+    public static int totalSize;
     public static boolean serviceFinished = false, serviceCancelled = false, stopService = false;
     public static String appName = "";
     public static List<String> failedApps;
@@ -51,6 +53,12 @@ public class UninstallScreen extends AppCompatActivity {
             mAdView.setVisibility(View.GONE);
         }
 
+        try {
+            totalSize = BackupActivity.selectedApps.size();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            totalSize = 1;
+        }
         failedApps = new ArrayList<>();
         selectedApplications = new ArrayList<>(BackupActivity.selectedApps);
         BackupActivity.selectedApps.clear();
@@ -77,8 +85,10 @@ public class UninstallScreen extends AppCompatActivity {
                 stopService = true;
                 serviceCancelled = true;
                 stopButton.setVisibility(View.GONE);
-                BackupScreen.selectedApplications.clear();
+                UninstallScreen.selectedApplications.clear();
+                UninstallScreen.totalSize = 0;
                 BackupActivity.operationRunning = false;
+
             }
         });
     }
@@ -125,6 +135,8 @@ public class UninstallScreen extends AppCompatActivity {
                 elasticDownloadView.setVisibility(View.VISIBLE);
                 elasticDownloadView.setProgress((float) elasticProgress);
             } else {
+                elasticDownloadView.success();
+                stopButton.setVisibility(View.GONE);
                 progressText.setText("Process Finished");
             }
         }

@@ -62,6 +62,7 @@ public class UninstallerIntentService extends IntentService {
             BackupActivity.operationRunning = false;
             UninstallScreen.appName = "";
             UninstallScreen.elasticProgress = 0;
+            UninstallScreen.totalSize = 0;
             UninstallScreen.stopService = false;
             UninstallScreen.serviceFinished = false;
             UninstallScreen.serviceCancelled = false;

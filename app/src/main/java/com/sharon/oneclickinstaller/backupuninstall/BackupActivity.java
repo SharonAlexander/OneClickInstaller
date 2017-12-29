@@ -121,8 +121,6 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("onClick FAB: ", operationRunning + "");
-                Log.e("onClick FAB: ", selectedApps.size() + "");
                 if (!operationRunning) {
                     if (selectedApps.size() > 0) {
                         operationRunning = true;

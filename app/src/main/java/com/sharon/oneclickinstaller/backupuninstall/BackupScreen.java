@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import com.google.android.gms.ads.AdView;
 import com.sharon.oneclickinstaller.AppProperties;
 import com.sharon.oneclickinstaller.PrefManager;
 import com.sharon.oneclickinstaller.R;
-import com.sharon.oneclickinstaller.install.InstallerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,9 @@ import is.arontibo.library.ElasticDownloadView;
 
 public class BackupScreen extends AppCompatActivity {
 
-    public static int appProgress = 0, elasticProgress = 0, totalSize = BackupActivity.selectedApps.size();
+    public static int appProgress = 0;
+    public static int elasticProgress = 0;
+    public static int totalSize;
     public static boolean serviceFinished = false, serviceCancelled = false, stopService = false;
     public static String appName = "";
     public static List<String> failedApps;
@@ -54,10 +54,15 @@ public class BackupScreen extends AppCompatActivity {
             mAdView.setVisibility(View.GONE);
         }
 
+        try {
+            totalSize = BackupActivity.selectedApps.size();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            totalSize = 1;
+        }
         failedApps = new ArrayList<>();
         selectedApplications = new ArrayList<>(BackupActivity.selectedApps);
         BackupActivity.selectedApps.clear();
-
         PrefManager prefManager = new PrefManager(this);
         destinationPath = prefManager.getStoragePref();
 
@@ -84,6 +89,7 @@ public class BackupScreen extends AppCompatActivity {
                 serviceCancelled = true;
                 stopButton.setVisibility(View.GONE);
                 BackupScreen.selectedApplications.clear();
+                BackupScreen.totalSize = 0;
                 BackupActivity.operationRunning = false;
             }
         });
@@ -133,6 +139,8 @@ public class BackupScreen extends AppCompatActivity {
                 elasticDownloadView.setVisibility(View.VISIBLE);
                 elasticDownloadView.setProgress((float) elasticProgress);
             } else {
+                elasticDownloadView.success();
+                stopButton.setVisibility(View.GONE);
                 progressText.setText("Process Finished");
             }
         }

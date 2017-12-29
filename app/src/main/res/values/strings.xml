@@ -50,7 +50,7 @@
 
     <!--Layouts-->
     <string name="swipe_down_to_refresh">Swipe Down to Refresh</string>
-    <string name="empty_list_change_directory">Empty List?\nChange folder and scan again</string>
+    <string name="empty_list_change_directory">Empty List?\nBackup some apps or Change folder and scan again</string>
     <string name="stop">Stop</string>
 
     <!--Settings-->

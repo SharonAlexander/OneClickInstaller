@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onAdClosed() {
                 requestNewInterstitial();
-                getFragmentManager().beginTransaction().replace(R.id.mainFrame, new Settings(), "settings").commit();
             }
         });
     }
