@@ -59,8 +59,13 @@ public class InstallScreen extends AppCompatActivity {
             e.printStackTrace();
             totalSize = 1;
         }
-        failedApps = new ArrayList<>();
-        selectedApplications = new ArrayList<>(InstallerActivity.selectedApps);
+        try {
+            failedApps = new ArrayList<>();
+            selectedApplications = new ArrayList<>();
+            selectedApplications.addAll(InstallerActivity.selectedApps);
+        } catch (NullPointerException e) {
+            Toast.makeText(this, "Unknown error on selection. Restart the app!", Toast.LENGTH_SHORT).show();
+        }
         InstallerActivity.selectedApps.clear();
         elasticDownloadView = findViewById(R.id.elastic_download_view);
         progressText = findViewById(R.id.progress_operation_text);

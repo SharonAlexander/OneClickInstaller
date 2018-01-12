@@ -119,11 +119,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onCreate(savedInstanceState);
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        onCreate(savedInstanceState);
+//    }
 
     @Override
     protected void onDestroy() {

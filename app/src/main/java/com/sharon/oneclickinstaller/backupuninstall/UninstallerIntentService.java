@@ -7,10 +7,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -92,7 +96,7 @@ public class UninstallerIntentService extends IntentService {
     }
 
     private boolean uninstallApk(AppProperties appProperties) {
-        updateNotification(appProperties.getIcon());
+        updateNotification(getAppIcon(appProperties));
         if (Shell.SU.available()) {
             output.clear();
             String command = "pm uninstall " + new File("\"" + appProperties.getPname() + "\"");
@@ -132,13 +136,52 @@ public class UninstallerIntentService extends IntentService {
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
-    private void updateNotification(Drawable icon) {
+    private void updateNotification(Bitmap bitmap) {
         builder.setProgress(UninstallScreen.totalSize, UninstallScreen.appProgress, false)
                 .setContentText(UninstallScreen.appProgress + "/" + UninstallScreen.totalSize)
                 .setOngoing(true)
-                .setLargeIcon(((BitmapDrawable) icon).getBitmap())
+                .setLargeIcon(bitmap)
                 .setContentTitle("Uninstalling:" + UninstallScreen.appName);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private Bitmap getAppIcon(AppProperties appProperties) {
+        try {
+            Drawable drawable = appProperties.getIcon();
+
+            if (drawable instanceof BitmapDrawable) {
+                return ((BitmapDrawable) drawable).getBitmap();
+            } else if (drawable instanceof AdaptiveIconDrawable) {
+                Drawable backgroundDr = null;
+                Drawable foregroundDr = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    backgroundDr = ((AdaptiveIconDrawable) drawable).getBackground();
+                    foregroundDr = ((AdaptiveIconDrawable) drawable).getForeground();
+                }
+
+                Drawable[] drr = new Drawable[2];
+                drr[0] = backgroundDr;
+                drr[1] = foregroundDr;
+
+                LayerDrawable layerDrawable = new LayerDrawable(drr);
+
+                int width = layerDrawable.getIntrinsicWidth();
+                int height = layerDrawable.getIntrinsicHeight();
+
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+                Canvas canvas = new Canvas(bitmap);
+
+                layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                layerDrawable.draw(canvas);
+
+                return bitmap;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void endNotification() {
