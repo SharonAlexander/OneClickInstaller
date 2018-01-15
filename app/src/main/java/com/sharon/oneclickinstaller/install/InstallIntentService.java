@@ -28,6 +28,9 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
+import static com.sharon.oneclickinstaller.install.InstallScreen.serviceCancelled;
+import static com.sharon.oneclickinstaller.install.InstallScreen.serviceFinished;
+
 public class InstallIntentService extends IntentService {
 
     public static final String PARAM_CANCELLED = "cancelled";
@@ -50,28 +53,30 @@ public class InstallIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean finish = installStart();
         if (finish) {
-            if (InstallScreen.serviceFinished && !InstallScreen.serviceCancelled) {
+            if (serviceFinished && !serviceCancelled) {
                 broadcastIntent.putExtra(PARAM_FINISHED, true);
                 sendBroadcast(broadcastIntent);
                 endNotification();
             }
-            if (InstallScreen.serviceCancelled) {
+            if (serviceCancelled) {
                 broadcastIntent.putExtra(PARAM_CANCELLED, true);
                 sendBroadcast(broadcastIntent);
                 cancelNotification();
             }
-            InstallScreen.appProgress = 0;
-            InstallScreen.failedApps.clear();
-            InstallScreen.selectedApplications.clear();
-            InstallerActivity.operationRunning = false;
-            InstallScreen.appName = "";
-            InstallScreen.elasticProgress = 0;
-            InstallScreen.totalSize = 0;
-            InstallScreen.stopService = false;
-            InstallScreen.serviceFinished = false;
-            InstallScreen.serviceCancelled = false;
+            disposeValues();
         }
         stopSelf();
+    }
+
+    private void disposeValues() {
+        InstallScreen.selectedApplications.clear();
+        InstallerActivity.operationRunning = false;
+        InstallScreen.failedApps.clear();
+        InstallScreen.appProgress = 0;
+        InstallScreen.elasticProgress = 0;
+        InstallScreen.stopService = false;
+        InstallScreen.serviceFinished = false;
+        InstallScreen.serviceCancelled = false;
     }
 
     private boolean installStart() {
@@ -91,7 +96,7 @@ public class InstallIntentService extends IntentService {
                 InstallScreen.failedApps.add(appProperties.getAppname());
             }
         }
-        InstallScreen.serviceFinished = true;
+        serviceFinished = true;
         return true;
     }
 

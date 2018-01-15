@@ -28,11 +28,11 @@ public class UninstallScreen extends AppCompatActivity {
 
     public static int appProgress = 0;
     public static int elasticProgress = 0;
-    public static int totalSize;
+    public static int totalSize = BackupActivity.selectedApps.size();
     public static boolean serviceFinished = false, serviceCancelled = false, stopService = false;
     public static String appName = "";
-    public static List<String> failedApps;
-    public static List<AppProperties> selectedApplications;
+    public static List<String> failedApps = new ArrayList<>();
+    public static List<AppProperties> selectedApplications = new ArrayList<>();
     ElasticDownloadView elasticDownloadView;
     TextView progressText;
     Button stopButton;
@@ -54,15 +54,13 @@ public class UninstallScreen extends AppCompatActivity {
         }
 
         try {
-            totalSize = BackupActivity.selectedApps.size();
+            if (!BackupActivity.selectedApps.isEmpty()) {
+                selectedApplications.addAll(BackupActivity.selectedApps);
+            }
+            BackupActivity.selectedApps.clear();
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            totalSize = 1;
+            Toast.makeText(this, "Unknown error on selection. Restart the app!", Toast.LENGTH_SHORT).show();
         }
-        failedApps = new ArrayList<>();
-        selectedApplications = new ArrayList<>(BackupActivity.selectedApps);
-        BackupActivity.selectedApps.clear();
-
         elasticDownloadView = findViewById(R.id.elastic_download_view);
         progressText = findViewById(R.id.progress_operation_text);
         stopButton = findViewById(R.id.stopButton);
@@ -82,12 +80,10 @@ public class UninstallScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 stopService(new Intent(UninstallScreen.this, UninstallerIntentService.class));
+                progressText.setText("Stopping...");
+                stopButton.setEnabled(false);
                 stopService = true;
                 serviceCancelled = true;
-                stopButton.setVisibility(View.GONE);
-                UninstallScreen.selectedApplications.clear();
-                UninstallScreen.totalSize = 0;
-                BackupActivity.operationRunning = false;
 
             }
         });
@@ -109,24 +105,20 @@ public class UninstallScreen extends AppCompatActivity {
         unregisterReceiver(responseReceiver);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     private void setValues() {
-        if (serviceFinished) {
-            elasticDownloadView.success();
-            progressText.setText("Uninstalled Succesfully");
-            stopButton.setVisibility(View.GONE);
-            if (!failedApps.isEmpty())
-                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
-        } else if (serviceCancelled) {
+        if (serviceCancelled) {
             elasticDownloadView.fail();
             progressText.setText("Un-installation Cancelled");
-            stopButton.setVisibility(View.GONE);
             if (!failedApps.isEmpty())
                 Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+            disposeValues();
+        } else if (serviceFinished) {
+            elasticDownloadView.success();
+            progressText.setText("Uninstalled Succesfully");
+            if (!failedApps.isEmpty())
+                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+            disposeValues();
         } else {
             if (BackupActivity.operationRunning) {
                 String text = "Uninstalling:" + appProgress + "/" + totalSize + "->" + appName;
@@ -136,10 +128,22 @@ public class UninstallScreen extends AppCompatActivity {
                 elasticDownloadView.setProgress((float) elasticProgress);
             } else {
                 elasticDownloadView.success();
-                stopButton.setVisibility(View.GONE);
                 progressText.setText("Process Finished");
+                disposeValues();
             }
         }
+    }
+
+    private void disposeValues() {
+        stopButton.setVisibility(View.GONE);
+        UninstallScreen.selectedApplications.clear();
+        BackupActivity.operationRunning = false;
+        UninstallScreen.failedApps.clear();
+        UninstallScreen.appProgress = 0;
+        UninstallScreen.elasticProgress = 0;
+        UninstallScreen.stopService = false;
+        UninstallScreen.serviceFinished = false;
+        UninstallScreen.serviceCancelled = false;
     }
 
     private void adsInitialise() {
@@ -161,21 +165,21 @@ public class UninstallScreen extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra(UninstallerIntentService.PARAM_CANCELLED, false)) {
-                elasticDownloadView.fail();
-                progressText.setText("Un-installation Cancelled");
-                stopButton.setVisibility(View.GONE);
-                if (!failedApps.isEmpty())
-                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
-            } else if (intent.getBooleanExtra(UninstallerIntentService.PARAM_FINISHED, false)) {
-                elasticDownloadView.success();
-                progressText.setText("Uninstalled Succesfully");
-                stopButton.setVisibility(View.GONE);
-                if (!failedApps.isEmpty())
-                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
-            } else {
-                setValues();
-            }
+//            if (intent.getBooleanExtra(UninstallerIntentService.PARAM_CANCELLED, false)) {
+//                elasticDownloadView.fail();
+//                progressText.setText("Un-installation Cancelled");
+//                stopButton.setVisibility(View.GONE);
+//                if (!failedApps.isEmpty())
+//                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+//            } else if (intent.getBooleanExtra(UninstallerIntentService.PARAM_FINISHED, false)) {
+//                elasticDownloadView.success();
+//                progressText.setText("Uninstalled Succesfully");
+//                stopButton.setVisibility(View.GONE);
+//                if (!failedApps.isEmpty())
+//                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+//            } else {
+            setValues();
+//            }
         }
     }
 }

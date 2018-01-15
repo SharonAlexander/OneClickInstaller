@@ -79,18 +79,20 @@ public class BackupIntentService extends IntentService {
                 sendBroadcast(broadcastIntent);
                 cancelNotification();
             }
-            BackupScreen.appProgress = 0;
-            BackupScreen.failedApps.clear();
-            BackupScreen.selectedApplications.clear();
-            BackupActivity.operationRunning = false;
-            BackupScreen.appName = "";
-            BackupScreen.elasticProgress = 0;
-            BackupScreen.totalSize = 0;
-            BackupScreen.stopService = false;
-            BackupScreen.serviceFinished = false;
-            BackupScreen.serviceCancelled = false;
+            disposeValues();
         }
         stopSelf();
+    }
+
+    private void disposeValues() {
+        BackupScreen.selectedApplications.clear();
+        BackupActivity.operationRunning = false;
+        BackupScreen.failedApps.clear();
+        BackupScreen.appProgress = 0;
+        BackupScreen.elasticProgress = 0;
+        BackupScreen.stopService = false;
+        BackupScreen.serviceFinished = false;
+        BackupScreen.serviceCancelled = false;
     }
 
     private boolean backupStart() {
@@ -126,7 +128,7 @@ public class BackupIntentService extends IntentService {
                 return true;
         } else {
             try {
-                getPackageManager().getPackageInfo(appProperties.getPname(), 0);
+                getPackageManager().getPackageInfo(appProperties.getPname(), 0);// to check existence i guess i forgot
                 nonSUBackup(appProperties);
                 return true;
             } catch (PackageManager.NameNotFoundException e) {

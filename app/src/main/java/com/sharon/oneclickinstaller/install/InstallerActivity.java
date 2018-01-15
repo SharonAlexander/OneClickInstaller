@@ -443,6 +443,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
     public void startFab() {
         if (MainActivity.phoneIsRooted) {
+            InstallScreen.totalSize = selectedApps.size();
             startActivity(new Intent(getActivity(), InstallScreen.class));
         } else {
             startActivity(new Intent(getActivity(), NonSuInstallScreen.class));

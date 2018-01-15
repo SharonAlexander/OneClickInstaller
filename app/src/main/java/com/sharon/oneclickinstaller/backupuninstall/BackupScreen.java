@@ -28,11 +28,11 @@ public class BackupScreen extends AppCompatActivity {
 
     public static int appProgress = 0;
     public static int elasticProgress = 0;
-    public static int totalSize;
+    public static int totalSize = BackupActivity.selectedApps.size();
     public static boolean serviceFinished = false, serviceCancelled = false, stopService = false;
     public static String appName = "";
-    public static List<String> failedApps;
-    public static List<AppProperties> selectedApplications;
+    public static List<String> failedApps = new ArrayList<>();
+    public static List<AppProperties> selectedApplications = new ArrayList<>();
     public static String destinationPath;
     ElasticDownloadView elasticDownloadView;
     TextView progressText;
@@ -55,14 +55,14 @@ public class BackupScreen extends AppCompatActivity {
         }
 
         try {
-            totalSize = BackupActivity.selectedApps.size();
+            if (!BackupActivity.selectedApps.isEmpty()) {
+                selectedApplications.addAll(BackupActivity.selectedApps);
+            }
+            BackupActivity.selectedApps.clear();
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            totalSize = 1;
+            Toast.makeText(this, "Unknown error on selection. Restart the app!", Toast.LENGTH_SHORT).show();
         }
-        failedApps = new ArrayList<>();
-        selectedApplications = new ArrayList<>(BackupActivity.selectedApps);
-        BackupActivity.selectedApps.clear();
+
         PrefManager prefManager = new PrefManager(this);
         destinationPath = prefManager.getStoragePref();
 
@@ -87,10 +87,8 @@ public class BackupScreen extends AppCompatActivity {
                 stopService(new Intent(BackupScreen.this, BackupIntentService.class));
                 stopService = true;
                 serviceCancelled = true;
-                stopButton.setVisibility(View.GONE);
-                BackupScreen.selectedApplications.clear();
-                BackupScreen.totalSize = 0;
-                BackupActivity.operationRunning = false;
+                progressText.setText("Stopping...");
+                stopButton.setEnabled(false);
             }
         });
     }
@@ -111,26 +109,21 @@ public class BackupScreen extends AppCompatActivity {
         unregisterReceiver(responseReceiver);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     private void setValues() {
-        if (serviceFinished) {
-            elasticDownloadView.success();
-            progressText.setText("Backedup Succesfully");
-            stopButton.setVisibility(View.GONE);
-            if (!failedApps.isEmpty()) {
-                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
-            }
-        } else if (serviceCancelled) {
+        if (serviceCancelled) {
             elasticDownloadView.fail();
             progressText.setText("Backup Cancelled");
-            stopButton.setVisibility(View.GONE);
             if (!failedApps.isEmpty()) {
                 Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
             }
+            disposeValues();
+        } else if (serviceFinished) {
+            elasticDownloadView.success();
+            progressText.setText("Backedup Succesfully");
+            if (!failedApps.isEmpty()) {
+                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
+            }
+            disposeValues();
         } else {
             if (BackupActivity.operationRunning) {
                 String text = "Installing:" + appProgress + "/" + totalSize + "->" + appName;
@@ -140,10 +133,22 @@ public class BackupScreen extends AppCompatActivity {
                 elasticDownloadView.setProgress((float) elasticProgress);
             } else {
                 elasticDownloadView.success();
-                stopButton.setVisibility(View.GONE);
+                disposeValues();
                 progressText.setText("Process Finished");
             }
         }
+    }
+
+    private void disposeValues() {
+        stopButton.setVisibility(View.GONE);
+        BackupScreen.selectedApplications.clear();
+        BackupActivity.operationRunning = false;
+        BackupScreen.failedApps.clear();
+        BackupScreen.appProgress = 0;
+        BackupScreen.elasticProgress = 0;
+        BackupScreen.stopService = false;
+        BackupScreen.serviceFinished = false;
+        BackupScreen.serviceCancelled = false;
     }
 
     private void adsInitialise() {
@@ -165,23 +170,23 @@ public class BackupScreen extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra(BackupIntentService.PARAM_CANCELLED, false)) {
-                elasticDownloadView.fail();
-                progressText.setText("Backup Cancelled");
-                stopButton.setVisibility(View.GONE);
-                if (!failedApps.isEmpty()) {
-                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
-                }
-            } else if (intent.getBooleanExtra(BackupIntentService.PARAM_FINISHED, false)) {
-                elasticDownloadView.success();
-                progressText.setText("Backedup Succesfully");
-                stopButton.setVisibility(View.GONE);
-                if (!failedApps.isEmpty()) {
-                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
-                }
-            } else {
+//            if (intent.getBooleanExtra(BackupIntentService.PARAM_CANCELLED, false)) {
+//                elasticDownloadView.fail();
+//                progressText.setText("Backup Cancelled");
+//                stopButton.setVisibility(View.GONE);
+//                if (!failedApps.isEmpty()) {
+//                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+//                }
+//            } else if (intent.getBooleanExtra(BackupIntentService.PARAM_FINISHED, false)) {
+//                elasticDownloadView.success();
+//                progressText.setText("Backedup Succesfully");
+//                stopButton.setVisibility(View.GONE);
+//                if (!failedApps.isEmpty()) {
+//                    Toast.makeText(context, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_LONG).show();
+//                }
+//            } else {
                 setValues();
-            }
+//            }
         }
     }
 }

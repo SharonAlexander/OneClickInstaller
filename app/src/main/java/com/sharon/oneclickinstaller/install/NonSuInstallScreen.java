@@ -19,7 +19,6 @@ import com.google.android.gms.ads.AdView;
 import com.sharon.oneclickinstaller.AppProperties;
 import com.sharon.oneclickinstaller.PrefManager;
 import com.sharon.oneclickinstaller.R;
-import com.sharon.oneclickinstaller.backupuninstall.BackupScreen;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,11 +28,11 @@ import is.arontibo.library.ElasticDownloadView;
 
 public class NonSuInstallScreen extends AppCompatActivity {
 
-    public int appProgress = 0, elasticProgress = 0, totalSize = InstallerActivity.selectedApps.size();
+    public int appProgress = 0, elasticProgress = 0, totalSize;
     public boolean serviceFinished = false, serviceCancelled = false;
     public String appName = "";
-    public List<String> failedApps;
-    public List<AppProperties> selectedApplications;
+    public List<String> failedApps = new ArrayList<>();
+    public List<AppProperties> selectedApplications = new ArrayList<>();
     ElasticDownloadView elasticDownloadView;
     TextView progressText;
     Button stopButton;
@@ -52,10 +51,16 @@ public class NonSuInstallScreen extends AppCompatActivity {
         } else {
             mAdView.setVisibility(View.GONE);
         }
+        totalSize = InstallerActivity.selectedApps.size();
+        try {
+            if (!InstallerActivity.selectedApps.isEmpty()) {
+                selectedApplications.addAll(InstallerActivity.selectedApps);
+            }
+            InstallerActivity.selectedApps.clear();
+        } catch (NullPointerException e) {
+            Toast.makeText(this, "Unknown error on selection. Restart the app!", Toast.LENGTH_SHORT).show();
+        }
 
-        failedApps = new ArrayList<>();
-        selectedApplications = new ArrayList<>(InstallerActivity.selectedApps);
-        InstallerActivity.selectedApps.clear();
         elasticDownloadView = findViewById(R.id.elastic_download_view);
         progressText = findViewById(R.id.progress_operation_text);
         stopButton = findViewById(R.id.stopButton);
@@ -75,8 +80,8 @@ public class NonSuInstallScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 serviceCancelled = true;
-                InstallerActivity.operationRunning = false;
-                BackupScreen.selectedApplications.clear();
+                progressText.setText("Stopping...");
+                stopButton.setEnabled(false);
             }
         });
     }
@@ -104,30 +109,40 @@ public class NonSuInstallScreen extends AppCompatActivity {
             }
         }
         serviceFinished = true;
-        InstallerActivity.operationRunning = false;
         setValues();
     }
 
     private void setValues() {
-        if (serviceFinished) {
-            elasticDownloadView.success();
-            progressText.setText("Finished Succesfully");
-            stopButton.setVisibility(View.GONE);
-            if (!failedApps.isEmpty()) {
-                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
-            }
-        } else if (serviceCancelled) {
+        if (serviceCancelled) {
             elasticDownloadView.fail();
             progressText.setText("Installation Cancelled");
-            stopButton.setVisibility(View.GONE);
             if (!failedApps.isEmpty()) {
                 Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
             }
+            disposeValues();
+        } else if (serviceFinished) {
+            elasticDownloadView.success();
+            progressText.setText("Finished Succesfully");
+            if (!failedApps.isEmpty()) {
+                Toast.makeText(this, "Failed Apps:" + failedApps.toString(), Toast.LENGTH_SHORT).show();
+            }
+            disposeValues();
         } else {
             String text = "Installing:" + appProgress + "/" + totalSize + "->" + appName;
             progressText.setText(text);
             elasticDownloadView.setProgress((float) elasticProgress);
         }
+    }
+
+    private void disposeValues() {
+        stopButton.setVisibility(View.GONE);
+        selectedApplications.clear();
+        InstallerActivity.operationRunning = false;
+        failedApps.clear();
+        appProgress = 0;
+        elasticProgress = 0;
+        serviceFinished = false;
+        serviceCancelled = false;
     }
 
     private void adsInitialise() {
