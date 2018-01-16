@@ -1,11 +1,14 @@
 package com.sharon.oneclickinstaller.install;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -44,6 +47,7 @@ public class NonSuInstallScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.progress_screen);
 
+
         isPremium = new PrefManager(this).getPremiumInfo();
         mAdView = findViewById(R.id.adView);
         if (!isPremium) {
@@ -68,7 +72,15 @@ public class NonSuInstallScreen extends AppCompatActivity {
         elasticDownloadView.startIntro();
 
         if (!selectedApplications.isEmpty()) {
-            callInstallProcess();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (!getPackageManager().canRequestPackageInstalls()) {
+                    startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", getPackageName()))), 1234);
+                } else {
+                    callInstallProcess();
+                }
+            } else {
+                callInstallProcess();
+            }
         } else {
             InstallerActivity.operationRunning = false;
             elasticDownloadView.setVisibility(View.GONE);
@@ -157,5 +169,20 @@ public class NonSuInstallScreen extends AppCompatActivity {
                 mAdView.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
+            if (getPackageManager().canRequestPackageInstalls()) {
+                callInstallProcess();
+            }
+        } else {
+            elasticDownloadView.fail();
+            progressText.setText("Permission to install from unknown sources is denied. Enable it from Settings");
+            disposeValues();
+        }
     }
 }
