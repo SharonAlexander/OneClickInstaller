@@ -55,7 +55,8 @@ public class BackupScreen extends AppCompatActivity {
         }
 
         try {
-            if (!BackupActivity.selectedApps.isEmpty()) {
+            if (!BackupActivity.selectedApps.isEmpty()) {//only enter this first and once
+                //that's why operation running is true and enter.. exception present and not corrected
                 selectedApplications.addAll(BackupActivity.selectedApps);
             }
             BackupActivity.selectedApps.clear();
@@ -126,7 +127,7 @@ public class BackupScreen extends AppCompatActivity {
             disposeValues();
         } else {
             if (BackupActivity.operationRunning) {
-                String text = "Installing:" + appProgress + "/" + totalSize + "->" + appName;
+                String text = "Backing up:" + appProgress + "/" + totalSize + "->" + appName;
                 progressText.setText(text);
                 stopButton.setVisibility(View.VISIBLE);
                 elasticDownloadView.setVisibility(View.VISIBLE);

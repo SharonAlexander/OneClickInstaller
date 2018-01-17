@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -59,6 +61,7 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
     AppProperties appProperties;
     FastItemAdapter<AppProperties> fastAdapter;
     ProgressBar progressBar;
+    FloatingActionButton fab;
     private List<AppProperties> appList, backedupApkList;
     private RecyclerView recyclerView;
     private ActionModeHelper actionModeHelper;
@@ -115,8 +118,7 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
         progressBar = view.findViewById(R.id.progressBar);
         readAllApps();
 
-
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,6 +140,8 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
                     }
                 } else {
                     Toast.makeText(getActivity(), "Another operation is running", Toast.LENGTH_SHORT).show();
+                    actionModeHelper.getActionMode().finish();
+                    selectedApps.clear();
                 }
             }
         });
@@ -399,6 +403,7 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)));
             return true;
         }
 
@@ -441,6 +446,7 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorAccent)));
         }
     }
 }

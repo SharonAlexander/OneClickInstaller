@@ -49,7 +49,7 @@ public class IntroTwo extends Fragment implements View.OnClickListener {
                         @Override
                         public void run() {
                             if (Shell.SU.available()) {
-                                if (getActivity()!=null) {
+                                if (getActivity() != null) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -58,7 +58,7 @@ public class IntroTwo extends Fragment implements View.OnClickListener {
                                     });
                                 }
                             } else {
-                                if (getActivity()!=null) {
+                                if (getActivity() != null) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

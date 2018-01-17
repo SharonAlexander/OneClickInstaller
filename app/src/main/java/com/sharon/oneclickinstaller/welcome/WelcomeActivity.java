@@ -138,16 +138,12 @@ public class WelcomeActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    // Top Rated fragment activity
                     return new IntroOne();
                 case 1:
-                    // Games fragment activity
                     return new IntroTwo();
                 case 2:
-                    // Movies fragment activity
                     return new IntroThree();
                 case 3:
-                    // Movies fragment activity
                     return new IntroFour();
             }
 
