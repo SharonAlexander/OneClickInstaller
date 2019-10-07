@@ -18,6 +18,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.sharon.oneclickinstaller.AppProperties;
 import com.sharon.oneclickinstaller.R;
@@ -60,18 +61,21 @@ public class UninstallerIntentService extends IntentService {
                 sendBroadcast(broadcastIntent);
                 cancelNotification();
             }
-            UninstallScreen.appProgress = 0;
-            UninstallScreen.failedApps.clear();
-            UninstallScreen.selectedApplications.clear();
-            BackupActivity.operationRunning = false;
-            UninstallScreen.appName = "";
-            UninstallScreen.elasticProgress = 0;
-            UninstallScreen.totalSize = 0;
-            UninstallScreen.stopService = false;
-            UninstallScreen.serviceFinished = false;
-            UninstallScreen.serviceCancelled = false;
+            disposeValues();
         }
         stopSelf();
+    }
+
+    private void disposeValues() {
+        Log.e("disposeValues: ", "disposing");
+        UninstallScreen.selectedApplications.clear();
+        BackupActivity.operationRunning = false;
+        UninstallScreen.failedApps.clear();
+        UninstallScreen.appProgress = 0;
+        UninstallScreen.elasticProgress = 0;
+        UninstallScreen.stopService = false;
+        UninstallScreen.serviceFinished = false;
+        UninstallScreen.serviceCancelled = false;
     }
 
     private boolean uninstallStart() {

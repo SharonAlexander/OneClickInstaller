@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +74,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
     AppProperties app;
     FastItemAdapter<AppProperties> fastAdapter;
     ProgressBar progressBar;
+    FloatingActionButton fab;
     private RecyclerView recyclerView;
     private Button change_directory;
     private List<AppProperties> appList;
@@ -128,8 +131,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
         progressBar = view.findViewById(R.id.progressBar);
         readAllApks();
 
-
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,6 +148,8 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
                     }
                 } else {
                     Toast.makeText(getActivity(), "Another operation is running", Toast.LENGTH_SHORT).show();
+                    actionModeHelper.getActionMode().finish();
+                    selectedApps.clear();
                 }
             }
         });
@@ -443,6 +447,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
     public void startFab() {
         if (MainActivity.phoneIsRooted) {
+            InstallScreen.totalSize = selectedApps.size();
             startActivity(new Intent(getActivity(), InstallScreen.class));
         } else {
             startActivity(new Intent(getActivity(), NonSuInstallScreen.class));
@@ -460,6 +465,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)));
             return true;
         }
 
@@ -502,6 +508,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorAccent)));
         }
     }
 }

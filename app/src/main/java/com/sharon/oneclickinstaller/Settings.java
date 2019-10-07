@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -21,7 +22,11 @@ import com.sharon.oneclickinstaller.util.Purchase;
 public class Settings extends PreferenceFragment {
 
     static final String ITEM_SKU_SMALL = "com.sharon.donate_small";
-//    static final String ITEM_SKU_SMALL = "android.test.purchased";
+
+    //    static final String ITEM_SKU_SMALL = "android.test.purchased";
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     PrefManager prefManager;
     Preference directory;
     InterstitialAd mInterstitialAd;
