@@ -1,7 +1,8 @@
 package com.sharon.oneclickinstaller;
 
 import android.content.Context;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class Constants {
 
@@ -11,7 +12,7 @@ public class Constants {
     public static String ads_interstitial_folder_video = "ca-app-pub-1740451756664908/7251179275";
 
     public static void showAlertAboutUs(Context context) {
-        String version = "5.2";
+        String version = BuildConfig.VERSION_NAME;
         new AlertDialog.Builder(context)
                 .setTitle(R.string.app_name)
                 .setMessage("Version:" + version + "\nDeveloped by MadRabbits\u00a9")

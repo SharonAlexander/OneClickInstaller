@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#43A047</color>
+    <color name="colorPrimaryDark">#33691E</color>
+    <color name="colorAccent">#E06A35</color>
 
 
-    <color name="folderColor">#000000</color>
+    <color name="folderColor">#696868</color>
     <color name="orange_salmon">#EC5745</color>
 
     <!-- dots inactive colors -->

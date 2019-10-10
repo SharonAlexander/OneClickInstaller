@@ -4,7 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
     <string name="app_folder_name">One_Click_Installer</string>
 
     <string name="installer_title">Installer</string>
@@ -46,10 +45,8 @@
     <string name="menu_drawer_backup">Backup</string>
     <string name="menu_drawer_more">More</string>
     <string name="menu_drawer_settings">Settings</string>
-    <string name="menu_drawer_about">About</string>
 
     <!--Layouts-->
-    <string name="swipe_down_to_refresh">Swipe Down to Refresh</string>
     <string name="empty_list_change_directory">Empty List?\nBackup some apps or Change folder and scan again</string>
     <string name="stop">Stop</string>
 
@@ -58,14 +55,10 @@
     <string name="prefrence_rateapp_title">Show us your support.</string>
     <string name="preference_rateapp_dialogTitle">Rate: One Click Installer</string>
     <string name="aboutus">About</string>
-    <string name="edittextpreference_default_summary">Select Folder</string>
-    <string name="toolbar_title">Settings</string>
 
     <!--Donate-->
     <string name="purchase_error">Error</string>
     <string name="purchase_already_owned">Error in purchase</string>
 
     <!--Ads-->
-    <string name="ads_native_installer_unit_id">ca-app-pub-1740451756664908/8674038477</string>
-    <string name="ads_native_backup_unit_id">ca-app-pub-1740451756664908/2627504873</string>
 </resources>

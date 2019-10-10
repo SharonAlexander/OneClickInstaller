@@ -16,8 +16,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.sharon.oneclickinstaller.AppProperties;
 import com.sharon.oneclickinstaller.R;
@@ -160,10 +161,10 @@ public class InstallIntentService extends IntentService {
 
             if (drawable instanceof BitmapDrawable) {
                 return ((BitmapDrawable) drawable).getBitmap();
-            } else if (drawable instanceof AdaptiveIconDrawable) {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Drawable backgroundDr = null;
                 Drawable foregroundDr = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (drawable instanceof AdaptiveIconDrawable) {
                     backgroundDr = ((AdaptiveIconDrawable) drawable).getBackground();
                     foregroundDr = ((AdaptiveIconDrawable) drawable).getForeground();
                 }
