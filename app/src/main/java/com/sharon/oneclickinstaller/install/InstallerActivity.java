@@ -2,7 +2,6 @@ package com.sharon.oneclickinstaller.install;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -100,6 +101,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
         View view = inflater.inflate(R.layout.activity_install, container, false);
 
         isPremium = prefManager.getPremiumInfo();
+        Log.d("Premium", isPremium + "");
         mAdView = view.findViewById(R.id.adListViewbanner);
         if (!isPremium) {
             adsInitialise();
@@ -158,7 +160,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
         change_directory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.mainFrame, new Settings(), "settings").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, new Settings(), "settings").commit();
             }
         });
 
@@ -233,7 +235,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
                 @Override
                 public void run() {
                     try {
-                        appList = getAllApks(prefManager.getStoragePref());
+                        appList = getAllApks(prefManager.getScanPref());
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
@@ -263,7 +265,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
     private List<AppProperties> getAllApks(String pathToScan) throws NullPointerException {
         File file = new File(pathToScan);
-        File fileLists[] = file.listFiles();
+        File[] fileLists = file.listFiles();
         if (fileLists != null && fileLists.length > 0) {
             for (File filename : fileLists) {
                 if (filename.isDirectory()) {
@@ -424,7 +426,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
 
     private void adsInitialise() {
         bannerAdRequest = new AdRequest.Builder()
-                .addTestDevice("D0ACF42C29771A79DA18B6D5E91A43E0")
+                .addTestDevice("28C860176FFCDA81CE79CBEE1E3F6D38")
                 .build();
         mAdView.loadAd(bannerAdRequest);
         mAdView.setAdListener(new AdListener() {

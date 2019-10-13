@@ -48,6 +48,7 @@
             android:layout_below="@+id/grant_permissions"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
+            android:padding="10dp"
             android:background="@drawable/stop_button_shape_cancel"
             android:text="@string/intro3_grant_sd_permissions"
             android:visibility="gone" />

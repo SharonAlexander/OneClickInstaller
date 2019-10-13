@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -20,27 +20,21 @@ import com.sharon.oneclickinstaller.util.IabHelper;
 import com.sharon.oneclickinstaller.util.IabResult;
 import com.sharon.oneclickinstaller.util.Purchase;
 
-public class Settings extends PreferenceFragment {
+import static com.sharon.oneclickinstaller.Constants.ITEM_SKU_SMALL;
 
-    static final String ITEM_SKU_SMALL = "com.sharon.donate_small";
+public class Settings extends PreferenceFragmentCompat {
 
-    //    static final String ITEM_SKU_SMALL = "android.test.purchased";
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-    PrefManager prefManager;
-    Preference directory;
-    InterstitialAd mInterstitialAd;
-    boolean isPremium;
-    IabHelper mHelper;
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
             = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result,
                                           Purchase purchase) {
             if (result.getResponse() == 7) {
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Wow!!")
-                        .setMessage("You are awesome! You already purchased this item")
+                        .setTitle(getString(R.string.purchase_success_title))
+                        .setMessage(getString(R.string.purchase_success_message))
                         .setPositiveButton(android.R.string.ok, null)
                         .setIcon(R.mipmap.ic_launcher)
                         .show();
@@ -52,15 +46,19 @@ public class Settings extends PreferenceFragment {
                         .setIcon(R.mipmap.ic_launcher)
                         .show();
             } else if (purchase.getSku().equals(ITEM_SKU_SMALL)) {
-                Toast.makeText(getActivity(), "Thanks for Purchasing!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.purchase_success_message2), Toast.LENGTH_SHORT).show();
             }
         }
     };
+    private PrefManager prefManager;
+    private Preference scandirectory, backupdirectory;
+    private InterstitialAd mInterstitialAd;
+    private boolean isPremium;
+    private IabHelper mHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settings_layout);
 
         prefManager = new PrefManager(getActivity());
         isPremium = prefManager.getPremiumInfo();
@@ -70,9 +68,24 @@ public class Settings extends PreferenceFragment {
         }
 
         getActivity().setTitle("Settings");
-        directory = findPreference("filepick");
-        directory.setSummary(prefManager.getStoragePref());
-        directory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        scandirectory = findPreference("scandir");
+        scandirectory.setSummary(prefManager.getScanPref());
+        scandirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getActivity(), FilePickerActivity.class);
+                i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+                i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
+                i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+                i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getScanPref());
+                startActivityForResult(i, 123);
+                return false;
+            }
+        });
+
+        backupdirectory = findPreference("backupdir");
+        backupdirectory.setSummary(prefManager.getStoragePref());
+        backupdirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent i = new Intent(getActivity(), FilePickerActivity.class);
@@ -80,7 +93,7 @@ public class Settings extends PreferenceFragment {
                 i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
                 i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
                 i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getStoragePref());
-                startActivityForResult(i, 123);
+                startActivityForResult(i, 456);
                 return false;
             }
         });
@@ -88,11 +101,25 @@ public class Settings extends PreferenceFragment {
         Preference preferences = findPreference("rateus");
         preferences.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sharon.oneclickinstaller"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_url)));
                 startActivity(intent);
                 return false;
             }
         });
+
+        Preference feedback = findPreference("feedback");
+        feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("text/plain");
+                email.putExtra(Intent.EXTRA_EMAIL, getString(R.string.email));
+                email.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
+                startActivity(Intent.createChooser(email,
+                        getString(R.string.email_chooser_intent)));
+                return false;
+            }
+        });
+
         Preference about = findPreference("about");
         about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -101,6 +128,7 @@ public class Settings extends PreferenceFragment {
             }
         });
         Preference donate = findPreference("donate");
+        if (isPremium) donate.setVisible(false);
         donate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (mHelper != null) mHelper.flagEndAsync();
@@ -113,6 +141,13 @@ public class Settings extends PreferenceFragment {
                 return false;
             }
         });
+        Preference purchased = findPreference("donate2");
+        if (isPremium) purchased.setVisible(true);
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings_layout, rootKey);
     }
 
     @Override
@@ -122,9 +157,23 @@ public class Settings extends PreferenceFragment {
             if (path != null) {
                 path = path.substring(path.lastIndexOf("root") + 4);
             } else {
+                path = prefManager.getScanPref();
+            }
+            scandirectory.setSummary(path);
+            prefManager.putScanPref(path);
+            if (!isPremium) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                }
+            }
+        } else if (requestCode == 456 && resultCode == Activity.RESULT_OK) {
+            String path = String.valueOf(data.getData());
+            if (path != null) {
+                path = path.substring(path.lastIndexOf("root") + 4);
+            } else {
                 path = prefManager.getStoragePref();
             }
-            directory.setSummary(path);
+            backupdirectory.setSummary(path);
             prefManager.putStoragePref(path);
             if (!isPremium) {
                 if (mInterstitialAd.isLoaded()) {

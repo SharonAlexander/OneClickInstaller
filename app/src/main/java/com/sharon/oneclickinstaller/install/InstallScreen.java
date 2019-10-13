@@ -147,7 +147,7 @@ public class InstallScreen extends AppCompatActivity {
 
     private void adsInitialise() {
         AdRequest bannerAdRequest = new AdRequest.Builder()
-                .addTestDevice("D0ACF42C29771A79DA18B6D5E91A43E0")
+                .addTestDevice("28C860176FFCDA81CE79CBEE1E3F6D38")
                 .build();
         mAdView.loadAd(bannerAdRequest);
         mAdView.setAdListener(new AdListener() {

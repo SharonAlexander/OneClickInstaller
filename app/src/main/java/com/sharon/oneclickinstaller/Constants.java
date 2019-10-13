@@ -10,6 +10,7 @@ public class Constants {
     public static String ads_interstitial_activity_settings_video = "ca-app-pub-1740451756664908/4490699279";
     public static String ads_interstitial_activity_processing_video = "ca-app-pub-1740451756664908/1002211864";
     public static String ads_interstitial_folder_video = "ca-app-pub-1740451756664908/7251179275";
+    public static String ITEM_SKU_SMALL = "com.sharon.donate_small";
 
     public static void showAlertAboutUs(Context context) {
         String version = BuildConfig.VERSION_NAME;

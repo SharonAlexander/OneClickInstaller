@@ -1,6 +1,5 @@
 package com.sharon.oneclickinstaller;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Fragment frag = getFragmentManager().findFragmentByTag("settings");
+        Fragment frag = getSupportFragmentManager().findFragmentByTag("settings");
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (frag != null) {
-            this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, new InstallerActivity()).commit();
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, new InstallerActivity()).commit();
             navigationView.getMenu().getItem(0).setChecked(true);
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -110,21 +110,15 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             fragment = new Settings();
-            this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment, "settings").commit();
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment, "settings").commit();
             drawer.closeDrawer(GravityCompat.START);
             return true;
         }
 
-        this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment).commit();
+        this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        onCreate(savedInstanceState);
-//    }
 
     @Override
     protected void onDestroy() {

@@ -136,7 +136,7 @@ public class BackupScreen extends AppCompatActivity {
             } else {
                 elasticDownloadView.success();
                 disposeValues();
-                progressText.setText("Process Finished");
+                progressText.setText("Backed up Successfully");
             }
         }
     }

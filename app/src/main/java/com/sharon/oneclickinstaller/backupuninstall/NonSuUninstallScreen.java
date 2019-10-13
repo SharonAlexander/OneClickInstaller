@@ -3,6 +3,7 @@ package com.sharon.oneclickinstaller.backupuninstall;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -69,7 +70,7 @@ public class NonSuUninstallScreen extends AppCompatActivity {
             BackupActivity.operationRunning = false;
             elasticDownloadView.setVisibility(View.GONE);
             stopButton.setVisibility(View.GONE);
-            progressText.setText("ERROR!");
+            progressText.setText("ERROR! List of apps can't be retrieved");
         }
 
         stopButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +91,7 @@ public class NonSuUninstallScreen extends AppCompatActivity {
             setValues();
             Intent intent = new Intent(Intent.ACTION_DELETE);
             intent.setData(Uri.parse("package:" + appProperties.getPname()));
+            Log.d("NONSUUNINSTALL", appProperties.getPname());
             startActivity(intent);
         }
         serviceFinished = true;
@@ -131,7 +133,7 @@ public class NonSuUninstallScreen extends AppCompatActivity {
 
     private void adsInitialise() {
         AdRequest bannerAdRequest = new AdRequest.Builder()
-                .addTestDevice("D0ACF42C29771A79DA18B6D5E91A43E0")
+                .addTestDevice("28C860176FFCDA81CE79CBEE1E3F6D38")
                 .build();
         mAdView.loadAd(bannerAdRequest);
         mAdView.setAdListener(new AdListener() {
