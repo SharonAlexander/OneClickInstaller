@@ -4,7 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
     <string name="app_folder_name">One_Click_Installer</string>
 
     <string name="installer_title">Installer</string>
@@ -12,9 +11,9 @@
 
     <!-- Welcome Screens. -->
     <string name="slide_1_title">One Click Installer\n&amp; Backup</string>
-    <string name="slide_1_desc">The easiest way to install and backup and uninstall apps.</string>
+    <string name="slide_1_desc">The easiest way to install, backup and uninstall apps.</string>
     <string name="next">NEXT</string>
-    <string name="start">GOT IT</string>
+    <string name="start">START</string>
     <string name="slide_2_title">Root Information</string>
     <string name="intro2_no_root">Quick Installation is not supported</string>
     <string name="intro2_root_granted">My device is rooted</string>
@@ -33,11 +32,6 @@
     <string name="permission_granted">Permissions Granted</string>
     <string name="one_more_permission">Read Permission is granted.\nNeeds SD Card Permission also.</string>
     <string name="rationale_storage">Needs storage permission</string>
-    <string name="intro4_select_the_backup_folder">Select the Backup Folder</string>
-    <string name="intro4_select_folder">Select Folder</string>
-    <string name="intro4_selected_folder">Selected Folder</string>
-    <string name="intro4_checkbox_internal">Scan whole Internal Storage</string>
-    <string name="intro4_checkbox_default">Scan default folder only</string>
 
     <!--Menu-->
     <string name="menu_action_mode_select_all">Select All</string>
@@ -46,26 +40,31 @@
     <string name="menu_drawer_backup">Backup</string>
     <string name="menu_drawer_more">More</string>
     <string name="menu_drawer_settings">Settings</string>
-    <string name="menu_drawer_about">About</string>
 
     <!--Layouts-->
-    <string name="swipe_down_to_refresh">Swipe Down to Refresh</string>
     <string name="empty_list_change_directory">Empty List?\nBackup some apps or Change folder and scan again</string>
     <string name="stop">Stop</string>
 
     <!--Settings-->
-    <string name="edittextpreference_title">Install/Backup Directory</string>
+    <string name="scandir">Scan Directory</string>
+    <string name="backupdir">Backup Directory</string>
     <string name="prefrence_rateapp_title">Show us your support.</string>
     <string name="preference_rateapp_dialogTitle">Rate: One Click Installer</string>
     <string name="aboutus">About</string>
-    <string name="edittextpreference_default_summary">Select Folder</string>
-    <string name="toolbar_title">Settings</string>
+    <string name="feedback_title">Send feedback</string>
+    <string name="feedback_summary">Report technical issues or suggest new features</string>
+
+    <string name="app_url">market://details?id=com.sharon.oneclickinstaller</string>
+    <string name="email">sharoncheers@gmail.com</string>
+    <string name="email_subject">Suggestions &amp; Feedback - One Click Installer</string>
+    <string name="email_chooser_intent">Send Email Using: </string>
 
     <!--Donate-->
     <string name="purchase_error">Error</string>
     <string name="purchase_already_owned">Error in purchase</string>
+    <string name="purchase_success_title">Wow!!</string>
+    <string name="purchase_success_message">You are awesome! You already purchased this item</string>
+    <string name="purchase_success_message2">Thanks for Purchasing!</string>
 
     <!--Ads-->
-    <string name="ads_native_installer_unit_id">ca-app-pub-1740451756664908/8674038477</string>
-    <string name="ads_native_backup_unit_id">ca-app-pub-1740451756664908/2627504873</string>
 </resources>

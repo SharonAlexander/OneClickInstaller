@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
-        android:icon="@drawable/directory_black"
-        android:key="filepick"
-        android:title="@string/edittextpreference_title" />
+        app:icon="@drawable/directory_white"
+        app:key="scandir"
+        app:title="@string/scandir" />
     <Preference
-        android:icon="@drawable/rate_black"
-        android:key="rateus"
-        android:summary="@string/prefrence_rateapp_title"
-        android:title="@string/preference_rateapp_dialogTitle" />
+        app:icon="@drawable/directory_black"
+        app:key="backupdir"
+        app:title="@string/backupdir" />
     <Preference
-        android:icon="@drawable/about_black"
-        android:key="about"
-        android:title="@string/aboutus" />
-    <PreferenceCategory android:title="Support the Developer">
+        app:icon="@drawable/rate_black"
+        app:key="rateus"
+        app:summary="@string/prefrence_rateapp_title"
+        app:title="@string/preference_rateapp_dialogTitle" />
+    <Preference
+        app:icon="@drawable/feedback"
+        app:key="feedback"
+        app:summary="@string/feedback_summary"
+        app:title="@string/feedback_title" />
+    <Preference
+        app:icon="@drawable/about_black"
+        app:key="about"
+        app:title="@string/aboutus" />
+    <PreferenceCategory app:title="Support the Developer">
         <PreferenceScreen
-            android:icon="@drawable/donate_black"
-            android:key="donate"
-            android:title="Remove the ADs" />
+            app:icon="@drawable/donate_black"
+            app:key="donate"
+            app:title="Remove the ADs" />
+        <PreferenceScreen
+            app:icon="@drawable/donate_black"
+            app:isPreferenceVisible="false"
+            app:key="donate2"
+            app:summary="Thanks for the support"
+            app:title="You're Awesome!" />
     </PreferenceCategory>
 </PreferenceScreen>

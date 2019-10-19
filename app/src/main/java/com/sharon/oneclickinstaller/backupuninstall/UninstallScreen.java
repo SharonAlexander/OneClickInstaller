@@ -5,12 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -148,7 +149,7 @@ public class UninstallScreen extends AppCompatActivity {
 
     private void adsInitialise() {
         AdRequest bannerAdRequest = new AdRequest.Builder()
-                .addTestDevice("D0ACF42C29771A79DA18B6D5E91A43E0")
+                .addTestDevice("28C860176FFCDA81CE79CBEE1E3F6D38")
                 .build();
         mAdView.loadAd(bannerAdRequest);
         mAdView.setAdListener(new AdListener() {

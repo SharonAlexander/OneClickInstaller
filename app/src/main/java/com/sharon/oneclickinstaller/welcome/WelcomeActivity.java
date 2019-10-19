@@ -1,14 +1,8 @@
 package com.sharon.oneclickinstaller.welcome;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +10,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.sharon.oneclickinstaller.MainActivity;
 import com.sharon.oneclickinstaller.PrefManager;
@@ -37,8 +38,9 @@ public class WelcomeActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             addBottomDots(position);
 
-            if (position == 3) {
-                btnNext.setVisibility(View.GONE);
+            if (position == 2) {
+                btnNext.setText(getString(R.string.start));
+
             } else {
                 btnNext.setText(getString(R.string.next));
             }
@@ -81,7 +83,7 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int current = getItem(+1);
-                if (current < 4) {
+                if (current < 3) {
                     // move to next screen
                     mViewPager.setCurrentItem(current);
                 } else {
@@ -101,7 +103,7 @@ public class WelcomeActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
         }
     }
 
@@ -110,7 +112,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void addBottomDots(int currentPage) {
-        dots = new TextView[4];
+        dots = new TextView[3];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
         int[] colorsInActive = getResources().getIntArray(R.array.array_dot_inactive);
@@ -143,8 +145,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     return new IntroTwo();
                 case 2:
                     return new IntroThree();
-                case 3:
-                    return new IntroFour();
             }
 
             return null;
@@ -152,7 +152,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
     }
 }

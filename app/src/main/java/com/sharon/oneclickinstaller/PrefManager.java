@@ -44,6 +44,15 @@ public class PrefManager {
         editor.commit();
     }
 
+    public String getScanPref() {
+        return preferences.getString("scan", Environment.getExternalStorageDirectory().getPath());
+    }
+
+    public void putScanPref(String value) {
+        editor.putString("scan", value);
+        editor.commit();
+    }
+
     public void putTreeUri(Uri uri) {
         editor.putString("treeuri", uri.toString());
         editor.commit();

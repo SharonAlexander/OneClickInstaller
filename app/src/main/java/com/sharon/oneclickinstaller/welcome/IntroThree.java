@@ -11,18 +11,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.provider.DocumentFile;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.Fragment;
 
 import com.sharon.oneclickinstaller.PrefManager;
 import com.sharon.oneclickinstaller.R;
@@ -41,9 +42,10 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
 
     private static final int WRITE_PERMISSION_CALLBACK_CONSTANT = 101;
     private static final int DOCUMENT_TREE_CONSTANT = 22;
-    public TextView txtPermissions;
+    public TextView txtPermissions, headingText;
     Button btnCheckPermissions,btnSDPermission;
     private View view;
+    PrefManager prefManager;
 
     public IntroThree() {
     }
@@ -64,6 +66,7 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         super.onActivityCreated(savedInstanceState);
         if (null != view) {
             txtPermissions = view.findViewById(R.id.permissions_info);
+            headingText = view.findViewById(R.id.text_slide3_heading);
             btnCheckPermissions = view.findViewById(R.id.grant_permissions);
             btnSDPermission = view.findViewById(R.id.grant_sd_permissions);
             btnCheckPermissions.setOnClickListener(new View.OnClickListener() {
@@ -149,12 +152,21 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
         getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         getActivity().getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        PrefManager prefManager = new PrefManager(getActivity());
+        prefManager = new PrefManager(getActivity());
         prefManager.putTreeUri(treeUri);
         if (pickedDir.findFile(getString(R.string.app_folder_name)) == null) {
             pickedDir.createDirectory(getString(R.string.app_folder_name));
         }
-        txtPermissions.setText(R.string.permission_granted);
+        txtPermissions.setVisibility(View.GONE);
+        headingText.setText(getString(R.string.permission_granted));
+        startAction();
+    }
+
+    private void startAction() {
+        String scanPath = Environment.getExternalStorageDirectory().getPath();
+        prefManager.putScanPref(scanPath);
+        prefManager.putStoragePref(scanPath);
+        prefManager.setFirstTimeLaunch(false);
     }
 
     @Override

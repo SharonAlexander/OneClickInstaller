@@ -1,27 +1,26 @@
 package com.sharon.oneclickinstaller;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.navigation.NavigationView;
 import com.sharon.oneclickinstaller.backupuninstall.BackupActivity;
 import com.sharon.oneclickinstaller.install.InstallerActivity;
 
 import eu.chainfire.libsuperuser.Shell;
-import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         prefManager = new PrefManager(this);
@@ -82,11 +80,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Fragment frag = getFragmentManager().findFragmentByTag("settings");
+        Fragment frag = getSupportFragmentManager().findFragmentByTag("settings");
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (frag != null) {
-            this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, new InstallerActivity()).commit();
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, new InstallerActivity()).commit();
             navigationView.getMenu().getItem(0).setChecked(true);
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -112,21 +110,15 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             fragment = new Settings();
-            this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment, "settings").commit();
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment, "settings").commit();
             drawer.closeDrawer(GravityCompat.START);
             return true;
         }
 
-        this.getFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment).commit();
+        this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, fragment).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        onCreate(savedInstanceState);
-//    }
 
     @Override
     protected void onDestroy() {
