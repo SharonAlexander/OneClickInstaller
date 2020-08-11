@@ -284,6 +284,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
                         app.setApkpath(filename.getAbsolutePath());
                         app.setIcon(pi.applicationInfo.loadIcon(packageManager));
                         app.setApksize((filename.length() / (1024 * 1024)) + "MB");
+                        app.setApkbytesize((int) filename.length());
                         app.setVersionname(pi.versionName);
                         app.setVersionCode(pi.versionCode);
                         app.setInstaller(true);
@@ -483,7 +484,7 @@ public class InstallerActivity extends Fragment implements EasyPermissions.Permi
                 case R.id.action_delete:
                     if (!operationRunning) {
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Delete apps?")
+                                .setTitle("Delete apk files?")
                                 .setMessage("Are you sure you want to delete the selected apps?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     @Override

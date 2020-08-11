@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class BackupActivity extends Fragment implements EasyPermissions.PermissionCallbacks {
 
+    public static final String TAG = "BackupActivity";
     public static List<AppProperties> selectedApps;
     public static boolean operationRunning = false;
     PackageManager packageManager;
@@ -88,6 +90,7 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
 
         isPremium = prefManager.getPremiumInfo();
         mAdView = view.findViewById(R.id.adListViewbanner);
+        Log.d(TAG, "isPremium: " + isPremium);
         if (!isPremium) {
             adsInitialise();
             requestNewInterstitial();
@@ -371,7 +374,6 @@ public class BackupActivity extends Fragment implements EasyPermissions.Permissi
 
     private void adsInitialise() {
         bannerAdRequest = new AdRequest.Builder()
-                .addTestDevice("28C860176FFCDA81CE79CBEE1E3F6D38")
                 .build();
         mAdView.loadAd(bannerAdRequest);
         mAdView.setAdListener(new AdListener() {

@@ -21,6 +21,7 @@ public class AppProperties extends AbstractItem<AppProperties, AppProperties.Vie
 
     private String appname, pname, versionname, apkpath, apksize;
     private int versionCode;
+    int apkbytesize;
     private boolean already_installedorbackedup = false, isInstaller = false, updated = false;
     private Drawable icon;
     private Context context;
@@ -71,6 +72,14 @@ public class AppProperties extends AbstractItem<AppProperties, AppProperties.Vie
 
     public void setApksize(String apksize) {
         this.apksize = apksize;
+    }
+
+    public int getApkbytesize() {
+        return apkbytesize;
+    }
+
+    public void setApkbytesize(int apkbytesize) {
+        this.apkbytesize = apkbytesize;
     }
 
     public boolean isAlready_installedorbackedup() {

@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class IntroThree extends Fragment implements EasyPermissions.PermissionCallbacks {
 
+    public static final String TAG = "IntroThree";
     private static final int WRITE_PERMISSION_CALLBACK_CONSTANT = 101;
     private static final int DOCUMENT_TREE_CONSTANT = 22;
     public TextView txtPermissions, headingText;
@@ -65,6 +67,8 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (null != view) {
+            prefManager = new PrefManager(getActivity());
+
             txtPermissions = view.findViewById(R.id.permissions_info);
             headingText = view.findViewById(R.id.text_slide3_heading);
             btnCheckPermissions = view.findViewById(R.id.grant_permissions);
@@ -106,10 +110,13 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
                                     btnSDPermission.setVisibility(View.VISIBLE);
+                                    createDefaultDirectoryInInternal();
                                 }
                             })
                             .setView(R.layout.sd_card_access_dialog);
             builder.create().show();
+        } else {
+            createDefaultDirectoryInInternal();
         }
     }
 
@@ -132,18 +139,28 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         btnCheckPermissions.setVisibility(View.GONE);
         if (hasRemovableSdCard(getActivity())) {
             txtPermissions.setText(R.string.one_more_permission);
-        } else {
-            txtPermissions.setText(R.string.permission_granted);
         }
-        txtPermissions.setVisibility(View.VISIBLE);
     }
 
     private void createDefaultDirectoryInInternal() {
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + getString(R.string.app_folder_name));
-        file.mkdir();
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.app_folder_name));
+        boolean f = file.mkdir();
         btnCheckPermissions.setVisibility(View.GONE);
         txtPermissions.setText(R.string.permission_granted);
         txtPermissions.setVisibility(View.VISIBLE);
+        Log.d(TAG, "createDefaultDirectoryInInternal: " + file.getPath() + " " + f);
+        if (f) {
+            Toast.makeText(getActivity(), "Default Directory created", Toast.LENGTH_SHORT).show();
+            startAction(file.getPath());
+        } else {
+            if (file.exists()) {
+                Toast.makeText(getActivity(), "Default Directory exists", Toast.LENGTH_SHORT).show();
+                startAction(file.getPath());
+            } else {
+                Toast.makeText(getActivity(), "Unable to create default directory", Toast.LENGTH_SHORT).show();
+                startAction(null);
+            }
+        }
     }
 
     @TargetApi(19)
@@ -152,21 +169,20 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
         getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         getActivity().getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        prefManager = new PrefManager(getActivity());
         prefManager.putTreeUri(treeUri);
         if (pickedDir.findFile(getString(R.string.app_folder_name)) == null) {
             pickedDir.createDirectory(getString(R.string.app_folder_name));
         }
         txtPermissions.setVisibility(View.GONE);
         headingText.setText(getString(R.string.permission_granted));
-        startAction();
+        startAction(null);
     }
 
-    private void startAction() {
-        String scanPath = Environment.getExternalStorageDirectory().getPath();
-        prefManager.putScanPref(scanPath);
-        prefManager.putStoragePref(scanPath);
-        prefManager.setFirstTimeLaunch(false);
+    private void startAction(String path) {
+        Log.d(TAG, "startAction: " + path);
+        String defaultPath = Environment.getExternalStorageDirectory().getPath();
+        prefManager.putScanPref(defaultPath);
+        prefManager.putStoragePref(path == null ? defaultPath : path);
     }
 
     @Override

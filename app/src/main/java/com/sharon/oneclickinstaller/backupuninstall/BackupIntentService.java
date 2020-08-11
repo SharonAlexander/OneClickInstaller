@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -43,6 +44,7 @@ import eu.chainfire.libsuperuser.Shell;
 
 public class BackupIntentService extends IntentService {
 
+    String TAG = "BackupIntent";
     public static final String PARAM_CANCELLED = "cancelled";
     public static final String PARAM_FINISHED = "finished";
     public static final String PARAM_RUNNING = "running";
@@ -173,6 +175,7 @@ public class BackupIntentService extends IntentService {
                 out.flush();
                 out.close();
             } catch (Exception e) {
+                Log.d(TAG, "nonSUBackup: " + e);
             }
         }
     }

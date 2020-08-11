@@ -16,15 +16,26 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.sharon.oneclickinstaller.backupuninstall.BackupActivity;
 import com.sharon.oneclickinstaller.install.InstallerActivity;
+
+import java.util.Arrays;
 
 import eu.chainfire.libsuperuser.Shell;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "SharonMainActivity";
     public static boolean phoneIsRooted = false;
     public NavigationView navigationView;
     InterstitialAd mInterstitialAd;
@@ -36,15 +47,23 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fireBaseStart();
         prefManager = new PrefManager(this);
         CheckPurchase.checkpurchases(getApplicationContext());
-        MobileAds.initialize(this, Constants.ads_app_id);
-        isPremium = prefManager.getPremiumInfo();
-        Log.e("isPremium: ", isPremium + "");
-        if (!isPremium) {
-            adsInterstitial();
-            requestNewInterstitial();
-        }
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                RequestConfiguration requestConfiguration = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("A3CDB132F7DEB4BC0EA8308B33DB1903")).build();
+                MobileAds.setRequestConfiguration(requestConfiguration);
+                isPremium = prefManager.getPremiumInfo();
+                Log.d(TAG, "isPremium: " + isPremium);
+                if (!isPremium) {
+                    adsInterstitial();
+                    requestNewInterstitial();
+                    Log.d(TAG, "onInitializationComplete: ");
+                }
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +82,22 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().performIdentifierAction(R.id.install, 0);
             navigationView.getMenu().getItem(0).setChecked(true);
         }
+    }
+
+    private void fireBaseStart() {
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult().getToken();
+                        Log.d(TAG, token);
+                    }
+                });
     }
 
     private void checkRoot() {
@@ -84,8 +119,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (frag != null) {
-            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, new InstallerActivity()).commit();
-            navigationView.getMenu().getItem(0).setChecked(true);
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, new BackupActivity()).commit();
+            navigationView.getMenu().getItem(1).setChecked(true);
             drawer.closeDrawer(GravityCompat.START);
         } else {
 //            CheckPurchase.dispose();
@@ -93,18 +128,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Fragment fragment = null;
+        Fragment fragment = new BackupActivity();
         if (id == R.id.install) {
             fragment = new InstallerActivity();
         } else if (id == R.id.backup) {
             fragment = new BackupActivity();
         } else if (id == R.id.settings) {
             if (!isPremium) {
+                Log.d(TAG, "onNavigationItemSelected: " + mInterstitialAd);
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 }

@@ -1,6 +1,7 @@
 package com.sharon.oneclickinstaller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sharon.oneclickinstaller.util.IabHelper;
 import com.sharon.oneclickinstaller.util.IabResult;
@@ -11,6 +12,7 @@ import static com.sharon.oneclickinstaller.Constants.ITEM_SKU_SMALL;
 
 public class CheckPurchase {
 
+    public static final String TAG = "CheckPurchase";
     public static boolean isPremium = false;
     private static IabHelper mHelper;
     private static PrefManager prefManager;
@@ -21,7 +23,8 @@ public class CheckPurchase {
             } else {
                 Purchase premiumPurchase = inventory.getPurchase(ITEM_SKU_SMALL);
                 isPremium = premiumPurchase != null;
-                prefManager.putPremiumInfo(isPremium);
+                Log.d(TAG, "isPremium: " + isPremium);
+                prefManager.putPremiumInfo(isPremium); //always check this value before publishing.
             }
         }
     };
