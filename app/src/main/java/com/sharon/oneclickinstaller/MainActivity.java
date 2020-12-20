@@ -1,6 +1,8 @@
 package com.sharon.oneclickinstaller;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -60,7 +62,6 @@ public class MainActivity extends AppCompatActivity
                 if (!isPremium) {
                     adsInterstitial();
                     requestNewInterstitial();
-                    Log.d(TAG, "onInitializationComplete: ");
                 }
             }
         });
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         checkRoot();
+        makeSettingsChange();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -79,8 +81,14 @@ public class MainActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
-            navigationView.getMenu().performIdentifierAction(R.id.install, 0);
-            navigationView.getMenu().getItem(0).setChecked(true);
+            navigationView.getMenu().performIdentifierAction(R.id.backup, 1);
+            navigationView.getMenu().getItem(1).setChecked(true);
+        }
+    }
+
+    private void makeSettingsChange() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            prefManager.putStoragePref(Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.sharon.oneclickinstaller");
         }
     }
 

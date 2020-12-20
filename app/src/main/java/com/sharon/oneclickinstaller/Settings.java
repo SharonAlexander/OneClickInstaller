@@ -3,7 +3,9 @@ package com.sharon.oneclickinstaller;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -27,6 +29,7 @@ public class Settings extends PreferenceFragmentCompat {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
             = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result,
@@ -55,6 +58,7 @@ public class Settings extends PreferenceFragmentCompat {
     private InterstitialAd mInterstitialAd;
     private boolean isPremium;
     private IabHelper mHelper;
+    private String defaultPath = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.sharon.oneclickinstaller";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,31 +73,47 @@ public class Settings extends PreferenceFragmentCompat {
 
         getActivity().setTitle("Settings");
         scandirectory = findPreference("scandir");
-        scandirectory.setSummary(prefManager.getScanPref());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            scandirectory.setSummary(defaultPath);
+        } else {
+            scandirectory.setSummary(prefManager.getScanPref());
+        }
         scandirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), FilePickerActivity.class);
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-                i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
-                i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getScanPref());
-                startActivityForResult(i, 123);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R | MainActivity.phoneIsRooted) {
+                    Intent i = new Intent(getActivity(), FilePickerActivity.class);
+                    i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+                    i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
+                    i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+                    i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getScanPref());
+                    startActivityForResult(i, 123);
+                } else {
+                    Toast.makeText(getActivity(), "Directory selection unavailable. Default path is : " + defaultPath, Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
         });
 
         backupdirectory = findPreference("backupdir");
-        backupdirectory.setSummary(prefManager.getStoragePref());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            backupdirectory.setSummary(defaultPath);
+        } else {
+            backupdirectory.setSummary(prefManager.getScanPref());
+        }
         backupdirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), FilePickerActivity.class);
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-                i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
-                i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getStoragePref());
-                startActivityForResult(i, 456);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R | MainActivity.phoneIsRooted) {
+                    Intent i = new Intent(getActivity(), FilePickerActivity.class);
+                    i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+                    i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
+                    i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
+                    i.putExtra(FilePickerActivity.EXTRA_START_PATH, prefManager.getStoragePref());
+                    startActivityForResult(i, 456);
+                } else {
+                    Toast.makeText(getActivity(), "Directory selection unavailable. Default path is : " + defaultPath, Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
         });
@@ -159,7 +179,12 @@ public class Settings extends PreferenceFragmentCompat {
             } else {
                 path = prefManager.getScanPref();
             }
-            scandirectory.setSummary(path);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R | MainActivity.phoneIsRooted) {
+                scandirectory.setSummary(path);
+            } else {
+                path = defaultPath;
+                scandirectory.setSummary("Default path selected");
+            }
             prefManager.putScanPref(path);
             if (!isPremium) {
                 if (mInterstitialAd.isLoaded()) {
@@ -173,7 +198,12 @@ public class Settings extends PreferenceFragmentCompat {
             } else {
                 path = prefManager.getStoragePref();
             }
-            backupdirectory.setSummary(path);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R | MainActivity.phoneIsRooted) {
+                backupdirectory.setSummary(path);
+            } else {
+                path = defaultPath;
+                backupdirectory.setSummary("Default path selected");
+            }
             prefManager.putStoragePref(path);
             if (!isPremium) {
                 if (mInterstitialAd.isLoaded()) {

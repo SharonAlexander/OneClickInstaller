@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OneClickInstaller.iml" filepath="$PROJECT_DIR$/.idea/modules/OneClickInstaller.iml" group="OneClickInstaller" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="OneClickInstaller/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OneClickInstaller.iml" filepath="$PROJECT_DIR$/.idea/modules/OneClickInstaller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/OneClickInstaller.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/OneClickInstaller.app.iml" />
     </modules>
   </component>
 </project>

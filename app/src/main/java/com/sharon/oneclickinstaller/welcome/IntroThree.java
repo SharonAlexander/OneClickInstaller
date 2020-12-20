@@ -32,6 +32,7 @@ import com.sharon.oneclickinstaller.R;
 import java.io.File;
 import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -48,6 +49,7 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
     Button btnCheckPermissions,btnSDPermission;
     private View view;
     PrefManager prefManager;
+    private boolean phoneIsRooted = false;
 
     public IntroThree() {
     }
@@ -69,6 +71,8 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         if (null != view) {
             prefManager = new PrefManager(getActivity());
 
+            checkRoot();
+
             txtPermissions = view.findViewById(R.id.permissions_info);
             headingText = view.findViewById(R.id.text_slide3_heading);
             btnCheckPermissions = view.findViewById(R.id.grant_permissions);
@@ -86,6 +90,18 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
                 }
             });
         }
+    }
+
+    private void checkRoot() {
+        Thread rootCheck = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (Shell.SU.available()) {
+                    phoneIsRooted = true;
+                }
+            }
+        });
+        rootCheck.start();
     }
 
     private void getSDCardPermission() {
@@ -143,23 +159,28 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
     }
 
     private void createDefaultDirectoryInInternal() {
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.app_folder_name));
-        boolean f = file.mkdir();
-        btnCheckPermissions.setVisibility(View.GONE);
-        txtPermissions.setText(R.string.permission_granted);
-        txtPermissions.setVisibility(View.VISIBLE);
-        Log.d(TAG, "createDefaultDirectoryInInternal: " + file.getPath() + " " + f);
-        if (f) {
-            Toast.makeText(getActivity(), "Default Directory created", Toast.LENGTH_SHORT).show();
-            startAction(file.getPath());
-        } else {
-            if (file.exists()) {
-                Toast.makeText(getActivity(), "Default Directory exists", Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R | phoneIsRooted) {
+            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.app_folder_name));
+            boolean f = file.mkdir();
+            btnCheckPermissions.setVisibility(View.GONE);
+            txtPermissions.setText(R.string.permission_granted);
+            txtPermissions.setVisibility(View.VISIBLE);
+            Log.d(TAG, "createDefaultDirectoryInInternal: " + file.getPath() + " " + f);
+            if (f) {
+                Toast.makeText(getActivity(), "Default Directory created", Toast.LENGTH_SHORT).show();
                 startAction(file.getPath());
             } else {
-                Toast.makeText(getActivity(), "Unable to create default directory", Toast.LENGTH_SHORT).show();
-                startAction(null);
+                if (file.exists()) {
+                    Toast.makeText(getActivity(), "Default Directory exists", Toast.LENGTH_SHORT).show();
+                    startAction(file.getPath());
+                } else {
+                    Toast.makeText(getActivity(), "Unable to create default directory", Toast.LENGTH_SHORT).show();
+                    startAction(null);
+                }
             }
+        } else {
+            Toast.makeText(getActivity(), "Default Directory will be used", Toast.LENGTH_SHORT).show();
+            startAction(null);
         }
     }
 
