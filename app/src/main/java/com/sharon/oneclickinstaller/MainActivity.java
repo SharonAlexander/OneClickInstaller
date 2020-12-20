@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
-            navigationView.getMenu().performIdentifierAction(R.id.backup, 1);
+            navigationView.getMenu().performIdentifierAction(R.id.install, 0);
             navigationView.getMenu().getItem(1).setChecked(true);
         }
     }
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     private void makeSettingsChange() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             prefManager.putStoragePref(Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.sharon.oneclickinstaller");
+            prefManager.putScanPref(Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.sharon.oneclickinstaller");
         }
     }
 
