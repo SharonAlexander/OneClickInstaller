@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
-            navigationView.getMenu().performIdentifierAction(R.id.install, 0);
+            navigationView.getMenu().performIdentifierAction(R.id.backup, 1);
             navigationView.getMenu().getItem(1).setChecked(true);
         }
     }
