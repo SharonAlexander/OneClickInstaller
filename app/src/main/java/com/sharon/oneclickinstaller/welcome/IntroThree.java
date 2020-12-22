@@ -196,7 +196,7 @@ public class IntroThree extends Fragment implements EasyPermissions.PermissionCa
         }
         txtPermissions.setVisibility(View.GONE);
         headingText.setText(getString(R.string.permission_granted));
-        startAction(null);
+        createDefaultDirectoryInInternal();
     }
 
     private void startAction(String path) {

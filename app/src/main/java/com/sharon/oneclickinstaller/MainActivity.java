@@ -148,9 +148,12 @@ public class MainActivity extends AppCompatActivity
             fragment = new BackupActivity();
         } else if (id == R.id.settings) {
             if (!isPremium) {
-                Log.d(TAG, "onNavigationItemSelected: " + mInterstitialAd);
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
+                try {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                } catch (NullPointerException e) {
+                    Log.d(TAG, "onNavigationItemSelected: " + e.getMessage());
                 }
             }
             fragment = new Settings();

@@ -53,6 +53,7 @@ public class Settings extends PreferenceFragmentCompat {
             }
         }
     };
+    public static final String TAG = "Settings Activity";
     private PrefManager prefManager;
     private Preference scandirectory, backupdirectory;
     private InterstitialAd mInterstitialAd;
@@ -99,7 +100,7 @@ public class Settings extends PreferenceFragmentCompat {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             backupdirectory.setSummary(defaultPath);
         } else {
-            backupdirectory.setSummary(prefManager.getScanPref());
+            backupdirectory.setSummary(prefManager.getStoragePref());
         }
         backupdirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
